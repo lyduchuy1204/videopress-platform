@@ -1,0 +1,19 @@
+# =============================================================================
+# CODEOWNERS — videopress-backend
+# =============================================================================
+# Mỗi PR đụng tới file/folder nào sẽ auto-request review từ team tương ứng.
+# Format: <pattern>  <@org/team> hoặc <@user>
+# =============================================================================
+
+# Default: toàn bộ repo do backend team owner
+*                       @videopress-org/backend-team
+
+# Shared module — sửa shape API có thể break tất cả lambda → cần lead review
+/shared/                @videopress-org/backend-leads
+
+# CI/CD config — DevOps team owner
+/Jenkinsfile.ci         @videopress-org/devops-team
+/.github/               @videopress-org/devops-team
+
+# Docs convention — cần backend lead duyệt
+/docs/                  @videopress-org/backend-leads

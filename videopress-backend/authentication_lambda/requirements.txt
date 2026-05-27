@@ -1,0 +1,4 @@
+# Runtime deps cho authentication_lambda (KHÔNG có dev deps).
+# Pin version để build reproducible.
+aws-lambda-powertools>=2.30,<3.0
+pydantic>=2.0,<3.0

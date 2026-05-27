@@ -1,0 +1,56 @@
+# =============================================================================
+# Terraform — file local KHÔNG commit
+# =============================================================================
+
+# Working directory của terraform (provider cache, modules cache)
+**/.terraform/*
+
+# State file — TUYỆT ĐỐI không commit (state có thể chứa secret/ARN/IP)
+*.tfstate
+*.tfstate.*
+*.tfstate.*.backup
+
+# Crash log
+crash.log
+crash.*.log
+
+# tfvars chứa giá trị thật (giữ lại file *.example)
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+!lambdas.auto.tfvars
+
+# CLI config + plan binary
+.terraformrc
+terraform.rc
+*.tfplan
+*.tfplan.*
+
+# Override files (developer cá nhân)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# =============================================================================
+# Editor / OS
+# =============================================================================
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =============================================================================
+# CI / report
+# =============================================================================
+plan.json
+tfplan.bin
+infracost-report.json
+infracost-base.json
+.terraform-docs.yml.bak
+
+# =============================================================================
+# QUAN TRỌNG: KHÔNG ignore lock file
+# =============================================================================
+# .terraform.lock.hcl  ← LUÔN COMMIT để pin provider version giữa các máy

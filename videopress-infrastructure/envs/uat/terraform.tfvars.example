@@ -1,0 +1,31 @@
+# =============================================================================
+# UAT — terraform.tfvars (mẫu)
+# Copy thành terraform.tfvars rồi điền giá trị thật. KHÔNG commit file thật.
+# =============================================================================
+
+aws_region  = "ap-southeast-1"
+environment = "uat"
+project     = "videopress"
+owner_team  = "devops-team"
+cost_center = "platform-uat"
+
+# Network — mặc định OK, chỉ đổi nếu corp dùng dải 10.10/16
+vpc_cidr           = "10.10.0.0/16"
+az_count           = 2
+single_nat_gateway = true # tiết kiệm ~$60/tháng so với multi-NAT
+
+# Artifact (CI backend đẩy zip lên bucket này)
+artifact_bucket  = "videopress-artifacts-nonprod-123456789012"
+artifact_version = "0.1.0-rc1"
+layer_version    = "0.1.0"
+
+# Email nhận alarm
+alert_email_recipients = [
+  "devops-uat@example.com",
+]
+
+# Cognito callback (FE app local dev / UAT URL)
+cognito_callback_urls = [
+  "http://localhost:3000/auth/callback",
+  "https://uat.videopress.example.com/auth/callback",
+]

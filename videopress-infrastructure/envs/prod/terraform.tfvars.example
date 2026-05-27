@@ -1,0 +1,43 @@
+# =============================================================================
+# Prod — terraform.tfvars (mẫu)
+# Copy thành terraform.tfvars rồi điền giá trị thật. KHÔNG commit file thật.
+#
+# ⚠️  PROD — BẮT BUỘC SAU KHI APPLY LẦN ĐẦU:
+#   1. Bật MFA Delete cho 2 S3 bucket (input/output) bằng AWS CLI:
+#         aws s3api put-bucket-versioning \
+#           --bucket videopress-input-prod-<acct> \
+#           --versioning-configuration Status=Enabled,MFADelete=Enabled \
+#           --mfa "<MFA-arn> <code>" --profile <root>
+#      Một lần thiết lập là vĩnh viễn — chỉ root user tắt được.
+#
+#   2. Verify deletion_protection_enabled = true cho cả 3 DynamoDB table.
+#   3. Bật cross-region backup AWS Backup (tham chiếu IDEA.md).
+#   4. Setup AWS Budget Alert $500/tháng.
+# =============================================================================
+
+aws_region  = "ap-southeast-1"
+environment = "prod"
+project     = "videopress"
+owner_team  = "sre-oncall"
+cost_center = "platform-prod"
+
+# Network — Prod 3 AZ + NAT mỗi AZ
+vpc_cidr           = "10.30.0.0/16"
+az_count           = 3
+single_nat_gateway = false # HA: NAT mỗi AZ
+
+# Artifact (CI backend đẩy zip lên bucket Prod account)
+artifact_bucket  = "videopress-artifacts-prod-987654321098"
+artifact_version = "1.0.0" # semver tag pure
+layer_version    = "1.0.0"
+
+# Email on-call
+alert_email_recipients = [
+  "sre-oncall@example.com",
+  "engineering-leads@example.com",
+]
+
+# Cognito callback (FE Prod URL)
+cognito_callback_urls = [
+  "https://videopress.example.com/auth/callback",
+]

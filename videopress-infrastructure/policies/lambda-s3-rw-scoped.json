@@ -1,0 +1,47 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowS3InputReadWriteUserPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": [
+        "arn:aws:s3:::videopress-input-${environment}-${account_id}/uploads/*",
+        "arn:aws:s3:::videopress-output-${environment}-${account_id}/results/*"
+      ]
+    },
+    {
+      "Sid": "AllowS3InputListBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::videopress-input-${environment}-${account_id}",
+        "arn:aws:s3:::videopress-output-${environment}-${account_id}"
+      ],
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": ["uploads/*", "results/*"]
+        }
+      }
+    },
+    {
+      "Sid": "DenyBucketLevelDestructive",
+      "Effect": "Deny",
+      "Action": [
+        "s3:DeleteBucket",
+        "s3:DeleteBucketPolicy",
+        "s3:PutBucketAcl",
+        "s3:PutBucketVersioning",
+        "s3:PutBucketPublicAccessBlock"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+// =============================================================================
+// Jenkinsfile.deploy — IaC Deploy theo môi trường
+// =============================================================================
+// Trigger:
+//   (a) Merge `main`            → auto deploy UAT
+//   (b) Tag `vX.Y.Z-staging`    → deploy Staging (1 reviewer approval)
+//   (c) Tag `vX.Y.Z`            → deploy Prod    (2 reviewer + 30' cooldown)
+// Gates Prod:
+//   - Backup DynamoDB (create-backup)
+//   - Backup state file (S3 archive)
+//   - Phân tích plan, chặn nếu DynamoDB schema/destroy
+// =============================================================================
+
+@Library('videopress-cicd@main') _
+
+terraformDeployPipeline(
+  terraformVersion: '1.11.0',
+  environments: ['uat', 'staging', 'prod'],
+  prodApprovers: 'devops-leads,sre-oncall',
+  prodCooldownMinutes: 30,
+  backupDynamoDbBeforeProd: true,
+  stateArchiveBucket: 'videopress-state-archive-${ACCOUNT}'
+)

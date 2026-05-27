@@ -1,0 +1,27 @@
+// Jenkinsfile MẪU — IaC deploy theo env.
+// Đặt tại `videopress-infrastructure/Jenkinsfile.deploy`.
+// Trigger:
+//   - merge main          → auto deploy UAT
+//   - tag vX.Y.Z-staging  → deploy Staging (1 approval)
+//   - tag vX.Y.Z          → deploy Prod (2 approval + cooldown)
+
+@Library('videopress-cicd@v1.2.0') _
+
+terraformDeployPipeline(
+  environments:             ['uat', 'staging', 'prod'],
+  workdirOf: [
+    uat:     'envs/uat',
+    staging: 'envs/staging',
+    prod:    'envs/prod'
+  ],
+  awsRoleArnOf: [
+    uat:     'arn:aws:iam::111111111111:role/jenkins-uat-runner',
+    staging: 'arn:aws:iam::111111111111:role/jenkins-staging-runner',
+    prod:    'arn:aws:iam::222222222222:role/jenkins-prod-runner'   // account khác
+  ],
+  prodApprovers:            'devops-leads,sre-oncall',
+  prodCooldownMinutes:      30,
+  backupDynamoDbBeforeProd: true,
+  stateArchiveBucket:       'videopress-state-archive',
+  teamsWebhook:             'teams-webhook-deploy'
+)

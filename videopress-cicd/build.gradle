@@ -1,0 +1,93 @@
+// Gradle build cho Jenkins Shared Library `videopress-cicd`.
+//
+// Mục đích:
+//   - Compile các class Groovy trong src/com/videopress/**.
+//   - Chạy Spock spec trong src/test/groovy/**.
+//   - Lint Groovy bằng CodeNarc.
+//   - Đo coverage bằng JaCoCo (>= 80%).
+
+plugins {
+  id 'groovy'
+  id 'codenarc'
+  id 'jacoco'
+}
+
+group   = 'com.videopress'
+version = '0.1.0'
+
+repositories {
+  mavenCentral()
+}
+
+// Layout của Jenkins Shared Library KHÔNG theo convention Maven mặc định:
+//   - vars/             ← global pipeline DSL (compile cùng main)
+//   - src/com/...       ← class Groovy (compile cùng main)
+//   - src/test/groovy/  ← Spock spec
+sourceSets {
+  main {
+    groovy {
+      srcDirs = ['src', 'vars']
+      // Loại folder src/test ra khỏi main source set.
+      exclude 'test/**'
+    }
+    resources {
+      srcDirs = ['resources']
+    }
+  }
+  test {
+    groovy {
+      srcDirs = ['src/test/groovy']
+    }
+    resources {
+      srcDirs = ['src/test/resources']
+    }
+  }
+}
+
+dependencies {
+  implementation 'org.codehaus.groovy:groovy-all:3.0.19'
+
+  testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
+  testImplementation 'com.lesfurets:jenkins-pipeline-unit:1.18'
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+}
+
+test {
+  useJUnitPlatform()
+  testLogging {
+    events 'passed', 'failed', 'skipped'
+    showStandardStreams = true
+  }
+}
+
+codenarc {
+  toolVersion       = '3.4.0'
+  configFile        = file('config/codenarc/codenarc.groovy')
+  ignoreFailures    = false
+  reportFormat      = 'html'
+}
+
+jacoco {
+  toolVersion = '0.8.11'
+}
+
+jacocoTestReport {
+  dependsOn test
+  reports {
+    html.required = true
+    xml.required  = true
+  }
+}
+
+jacocoTestCoverageVerification {
+  violationRules {
+    rule {
+      limit {
+        counter = 'INSTRUCTION'
+        minimum = 0.80
+      }
+    }
+  }
+}
+
+check.dependsOn jacocoTestCoverageVerification

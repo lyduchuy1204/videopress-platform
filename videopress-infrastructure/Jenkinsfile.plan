@@ -1,0 +1,18 @@
+// =============================================================================
+// Jenkinsfile.plan — IaC Plan-Only (gate review trên PR)
+// =============================================================================
+// Trigger: PR mở/push lên videopress-infrastructure.
+// Gọi shared library terraformPlanPipeline() từ videopress-cicd.
+// Đặc biệt: blockOnDynamoDbSchemaChange = true — chặn merge nếu PR đụng schema
+// DynamoDB (hash_key / range_key / attribute / destroy table).
+// =============================================================================
+
+@Library('videopress-cicd@main') _
+
+terraformPlanPipeline(
+  terraformVersion: '1.11.0',
+  defaultEnv: 'uat',
+  blockOnDynamoDbSchemaChange: true,
+  enableInfracost: true,
+  teamsWebhook: env.TEAMS_WEBHOOK_INFRA
+)

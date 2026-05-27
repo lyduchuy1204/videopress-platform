@@ -1,0 +1,18 @@
+// =============================================================================
+// Jenkinsfile.rollback — Emergency Rollback
+// =============================================================================
+// Trigger: CHỈ MANUAL từ Jenkins UI.
+// Yêu cầu input: target_env, target_state_version_id, reason, incident_ticket
+// Approval: BẮT BUỘC 2 LẦN (trước tải state, trước apply).
+// Audit: ghi vào S3 bucket riêng `videopress-audit-trail`.
+// =============================================================================
+
+@Library('videopress-cicd@main') _
+
+terraformRollbackPipeline(
+  terraformVersion: '1.11.0',
+  allowedEnvs: ['uat', 'staging', 'prod'],
+  stateArchiveBucket: 'videopress-state-archive-${ACCOUNT}',
+  requireDoubleApproval: true,
+  auditBucket: 'videopress-audit-trail'
+)

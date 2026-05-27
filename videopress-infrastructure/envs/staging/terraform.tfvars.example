@@ -1,0 +1,27 @@
+# =============================================================================
+# Staging — terraform.tfvars (mẫu)
+# Copy thành terraform.tfvars rồi điền giá trị thật. KHÔNG commit file thật.
+# =============================================================================
+
+aws_region  = "ap-southeast-1"
+environment = "staging"
+project     = "videopress"
+owner_team  = "devops-team"
+cost_center = "platform-staging"
+
+vpc_cidr           = "10.20.0.0/16"
+az_count           = 2
+single_nat_gateway = true
+
+artifact_bucket  = "videopress-artifacts-nonprod-123456789012"
+artifact_version = "0.1.0-staging"
+layer_version    = "0.1.0"
+
+alert_email_recipients = [
+  "devops-staging@example.com",
+  "qa-team@example.com",
+]
+
+cognito_callback_urls = [
+  "https://staging.videopress.example.com/auth/callback",
+]

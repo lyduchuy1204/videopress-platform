@@ -1,0 +1,25 @@
+# CODEOWNERS — auto-assign reviewer cho mỗi PR.
+# Cú pháp: <pattern>  <space>  <owner1> <owner2> ...
+# Doc: https://docs.github.com/en/repositories/managing-your-repositories-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default — mọi file
+*                                @videopress-org/devops-team
+
+# Pipeline DSL — đụng pipeline run trên mọi repo, cần SRE lead duyệt
+/vars/                           @videopress-org/sre-leads
+/pipelines/                      @videopress-org/sre-leads
+
+# AWS interaction (assume role, state backup) — security review bắt buộc
+/src/com/videopress/aws/         @videopress-org/security-team
+/src/test/groovy/com/videopress/aws/  @videopress-org/security-team
+
+# Terraform plan analyzer — mọi thay đổi đều phải được security + SRE review
+/src/com/videopress/terraform/PlanReviewBot.groovy  @videopress-org/security-team @videopress-org/sre-leads
+
+# Documentation
+/docs/                           @videopress-org/devops-team
+/README.md                       @videopress-org/devops-team
+
+# Build config
+/build.gradle                    @videopress-org/sre-leads
+/settings.gradle                 @videopress-org/sre-leads

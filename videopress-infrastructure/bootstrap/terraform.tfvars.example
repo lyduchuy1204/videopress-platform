@@ -1,0 +1,24 @@
+# =============================================================================
+# Bootstrap — terraform.tfvars (mẫu)
+# Copy file này thành `terraform.tfvars` rồi điền giá trị thật. KHÔNG commit.
+# =============================================================================
+
+# Account đang chạy: "nonprod" hoặc "prod".
+# CHẠY 2 LẦN — 1 lần ở account nonprod, 1 lần ở account prod (Phương án B).
+account_alias = "nonprod"
+
+# AWS region — gần khách hàng / corp office.
+region = "ap-southeast-1"
+
+# Tag chuẩn áp dụng cho mọi resource bootstrap.
+tags = {
+  Project     = "videopress"
+  Environment = "shared"
+  Owner       = "devops-team"
+  ManagedBy   = "terraform"
+  CostCenter  = "platform"
+  Stack       = "bootstrap"
+}
+
+# CẨN THẬN: KHÔNG bật force_destroy ở prod — nếu xoá bucket = mất state archive.
+force_destroy_archive = false

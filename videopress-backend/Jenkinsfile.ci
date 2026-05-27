@@ -1,0 +1,23 @@
+// =============================================================================
+// videopress-backend — Jenkinsfile.ci
+// =============================================================================
+// Pipeline CI cho repo backend. KHÔNG chứa logic — chỉ gọi shared library.
+// Logic chi tiết (stages, lint, test, package, upload) nằm ở repo
+// `videopress-cicd` trong function `pythonLambdaPipeline()`.
+// =============================================================================
+
+@Library('videopress-cicd@main') _
+
+pythonLambdaPipeline(
+    pythonVersion:     '3.11',
+    coverageThreshold: 70,
+    lambdas: [
+        'authentication_lambda',
+        'notification_lambda',
+        'upload_lambda',
+        'compression_lambda',
+        'job_status_lambda'
+    ],
+    artifactBucket: 'videopress-artifacts-nonprod',
+    teamsWebhook:   env.TEAMS_WEBHOOK_BACKEND
+)

@@ -1,0 +1,25 @@
+# =============================================================================
+# CODEOWNERS — videopress-infrastructure
+# Doc: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-security/customizing-your-repository/about-code-owners
+# =============================================================================
+# Cú pháp: <pattern>  <owner...>
+# Owner càng cụ thể (đặt sau) sẽ override owner chung (đặt trước).
+# =============================================================================
+
+# Mặc định — toàn bộ repo
+*                @videopress-org/devops-team
+
+# Module chung — SRE leads review để giữ chuẩn
+/modules/        @videopress-org/sre-leads
+
+# Env Prod — Security + SRE on-call cùng review (2 mắt)
+/envs/prod/      @videopress-org/sre-oncall @videopress-org/security-team
+
+# IAM policy JSON — Security team owns
+/policies/       @videopress-org/security-team
+
+# Bootstrap stack (state bucket + KMS) — chỉ SRE lead duyệt
+/bootstrap/      @videopress-org/sre-leads
+
+# Jenkinsfile — DevOps team
+/Jenkinsfile.*   @videopress-org/devops-team @videopress-org/sre-leads

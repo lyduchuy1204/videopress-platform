@@ -1,0 +1,21 @@
+// Jenkinsfile MẪU — IaC plan-only chạy mỗi PR.
+// Đặt tại `videopress-infrastructure/Jenkinsfile.plan`.
+
+@Library('videopress-cicd@v1.2.0') _
+
+// Suy ra targetEnv từ PR label (env:uat / env:staging / env:prod).
+// Default 'uat' nếu PR không có label nào.
+def envFromPRLabel() {
+  def label = (env.CHANGE_LABELS ?: '').toLowerCase()
+  if (label.contains('env:prod'))    return 'prod'
+  if (label.contains('env:staging')) return 'staging'
+  return 'uat'
+}
+
+terraformPlanPipeline(
+  workdir:         "envs/${envFromPRLabel()}",
+  targetEnv:       envFromPRLabel(),
+  awsRoleArn:      "arn:aws:iam::111111111111:role/jenkins-${envFromPRLabel()}-runner",
+  githubToken:     'github-pat-pr-comment',  // Jenkins credential ID
+  enableInfracost: true
+)

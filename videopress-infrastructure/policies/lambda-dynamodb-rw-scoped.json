@@ -1,0 +1,53 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowDynamoDBReadWriteScopedTables",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:${region}:${account_id}:table/Users-${environment}",
+        "arn:aws:dynamodb:${region}:${account_id}:table/Users-${environment}/index/*",
+        "arn:aws:dynamodb:${region}:${account_id}:table/Jobs-${environment}",
+        "arn:aws:dynamodb:${region}:${account_id}:table/Jobs-${environment}/index/*",
+        "arn:aws:dynamodb:${region}:${account_id}:table/Notifications-${environment}",
+        "arn:aws:dynamodb:${region}:${account_id}:table/Notifications-${environment}/index/*"
+      ]
+    },
+    {
+      "Sid": "AllowDynamoDBStreamRead",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:DescribeStream",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:ListStreams"
+      ],
+      "Resource": "arn:aws:dynamodb:${region}:${account_id}:table/Jobs-${environment}/stream/*"
+    },
+    {
+      "Sid": "DenyTableAdminActions",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:CreateTable",
+        "dynamodb:DeleteTable",
+        "dynamodb:UpdateTable",
+        "dynamodb:CreateBackup",
+        "dynamodb:DeleteBackup",
+        "dynamodb:RestoreTableFromBackup",
+        "dynamodb:RestoreTableToPointInTime"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

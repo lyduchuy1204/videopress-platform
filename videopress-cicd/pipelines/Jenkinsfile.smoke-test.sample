@@ -1,0 +1,25 @@
+// Jenkinsfile MẪU — Smoke test rerun độc lập.
+// Đặt tại `videopress-infrastructure/Jenkinsfile.smoke-test`.
+// Cũng được terraformDeployPipeline gọi như downstream job.
+
+@Library('videopress-cicd@v1.2.0') _
+
+properties([
+  parameters([
+    choice(name: 'TARGET_ENV', choices: ['uat', 'staging', 'prod'], description: 'Env cần test')
+  ])
+])
+
+def apiUrlOf = [
+  uat:     'https://api-uat.videopress.example.com',
+  staging: 'https://api-staging.videopress.example.com',
+  prod:    'https://api.videopress.example.com'
+]
+
+smokeTestPipeline(
+  targetEnv:             params.TARGET_ENV,
+  apiInvokeUrl:          apiUrlOf[params.TARGET_ENV],
+  postmanCollectionPath: 'tests/smoke.postman_collection.json',
+  expectedHttpCodes:     [200, 201, 204],
+  teamsWebhook:          'teams-webhook-smoke-test'
+)

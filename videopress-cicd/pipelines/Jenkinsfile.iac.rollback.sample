@@ -1,0 +1,25 @@
+// Jenkinsfile MẪU — Emergency rollback.
+// Đặt tại `videopress-infrastructure/Jenkinsfile.rollback`.
+// Trigger: CHỈ MANUAL từ Jenkins UI (không build trên branch nào).
+
+@Library('videopress-cicd@v1.2.0') _
+
+terraformRollbackPipeline(
+  allowedEnvs:           ['staging', 'prod'],   // không rollback UAT (rebuild rẻ hơn)
+  stateArchiveBucket:    'videopress-state-archive',
+  stateBucketOf: [
+    staging: 'videopress-tfstate-staging',
+    prod:    'videopress-tfstate-prod'
+  ],
+  workdirOf: [
+    staging: 'envs/staging',
+    prod:    'envs/prod'
+  ],
+  awsRoleArnOf: [
+    staging: 'arn:aws:iam::111111111111:role/jenkins-staging-runner',
+    prod:    'arn:aws:iam::222222222222:role/jenkins-prod-runner'
+  ],
+  requireDoubleApproval: true,
+  auditBucket:           'videopress-audit-trail',
+  teamsWebhook:          'teams-webhook-incident'
+)

@@ -1,0 +1,3 @@
+# Runtime deps cho notification_lambda
+aws-lambda-powertools>=2.30,<3.0
+pydantic>=2.0,<3.0

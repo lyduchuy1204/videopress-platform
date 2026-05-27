@@ -1,0 +1,87 @@
+// Jenkinsfile cho chính repo videopress-cicd.
+// Mục đích: chạy Spock spec + CodeNarc lint + publish coverage report
+// trên mỗi PR/push để bảo đảm shared library không bị break trước khi
+// các repo consumer pull về dùng.
+//
+// Trigger: PR open/sync, push lên main.
+// Owner: SRE / DevOps team.
+
+pipeline {
+  agent any
+
+  options {
+    timeout(time: 20, unit: 'MINUTES')
+    timestamps()
+    buildDiscarder(logRotator(numToKeepStr: '30'))
+    disableConcurrentBuilds()
+  }
+
+  triggers {
+    pollSCM('H/5 * * * *')
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Test Spock') {
+      steps {
+        sh './gradlew test --no-daemon'
+      }
+      post {
+        always {
+          junit allowEmptyResults: true,
+                testResults: 'build/test-results/test/*.xml'
+        }
+      }
+    }
+
+    stage('Lint Groovy') {
+      steps {
+        sh './gradlew codenarcMain codenarcTest --no-daemon'
+      }
+    }
+
+    stage('Coverage') {
+      steps {
+        sh './gradlew jacocoTestReport jacocoTestCoverageVerification --no-daemon'
+      }
+    }
+
+    stage('Publish Coverage') {
+      steps {
+        publishHTML target: [
+          reportDir:            'build/reports/tests/test',
+          reportFiles:          'index.html',
+          reportName:           'Spock Test',
+          keepAll:              true,
+          alwaysLinkToLastBuild: true,
+          allowMissing:         false
+        ]
+        publishHTML target: [
+          reportDir:    'build/reports/jacoco/test/html',
+          reportFiles:  'index.html',
+          reportName:   'JaCoCo Coverage',
+          keepAll:      true,
+          allowMissing: true
+        ]
+      }
+    }
+  }
+
+  post {
+    success {
+      echo "✅ videopress-cicd build OK on ${env.BRANCH_NAME} (${env.BUILD_NUMBER})"
+    }
+    failure {
+      echo "❌ videopress-cicd build FAILED on ${env.BRANCH_NAME} (${env.BUILD_NUMBER})"
+    }
+    always {
+      cleanWs notFailBuild: true
+    }
+  }
+}

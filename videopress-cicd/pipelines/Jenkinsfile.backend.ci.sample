@@ -1,0 +1,19 @@
+// Jenkinsfile MẪU cho repo videopress-backend.
+// Copy file này vào root repo backend với tên `Jenkinsfile`.
+// Pin version shared library bằng tag để ổn định.
+
+@Library('videopress-cicd@v1.2.0') _
+
+pythonLambdaPipeline(
+  pythonVersion:     '3.11',
+  coverageThreshold: 70,
+  lambdas: [
+    'hello',
+    'auth-issue',
+    'video-create-job',
+    'video-status',
+    'notification-publish'
+  ],
+  artifactBucket:    'videopress-artifacts-non-prod',
+  teamsWebhook:      'teams-webhook-backend'   // Jenkins credential ID
+)
