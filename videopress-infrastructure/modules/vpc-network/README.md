@@ -2,6 +2,31 @@
 
 > Tạo 1 VPC đầy đủ kèm 6 subnet (2 public + 2 private + 2 VPCE), IGW, NAT Gateway (single hoặc per-AZ), 9 VPC Endpoints (2 Gateway + 7 Interface) và Flow Log.
 
+---
+
+## 📂 Cấu trúc file (tách theo concern, dễ đọc hơn 1 file lớn)
+
+```
+vpc-network/
+├── main.tf              ← index + sơ đồ tổng (KHÔNG có resource)
+├── locals.tf            ← AZ list, chia subnet CIDR, phân loại endpoint
+├── vpc.tf               ← VPC + Internet Gateway
+├── subnets.tf           ← 3 nhóm subnet (public / private / vpce)
+├── nat.tf               ← Elastic IP + NAT Gateway
+├── routes.tf            ← 3 route table + association
+├── security-groups.tf   ← SG cho Interface Endpoint
+├── endpoints.tf         ← Gateway + Interface VPC Endpoints
+├── flow-log.tf          ← VPC Flow Log → CloudWatch
+├── variables.tf         ← Input
+├── outputs.tf           ← Output
+├── versions.tf          ← Pin Terraform + provider
+└── README.md            ← bạn đang đọc
+```
+
+> 💡 Đọc theo thứ tự: `main.tf` → `locals.tf` → `vpc.tf` → `subnets.tf` → `nat.tf` → `routes.tf` → `security-groups.tf` → `endpoints.tf` → `flow-log.tf`. Đó là thứ tự logic "trong ra ngoài".
+
+---
+
 ## 📋 Inputs
 
 | Tên | Type | Default | Mô tả |
